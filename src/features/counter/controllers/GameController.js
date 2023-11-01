@@ -1,4 +1,4 @@
-import * as PIXI from '../pixijsLibrary.js'
+import * as PIXI from 'pixi.js';
 import BallController from './BallController'
 
 export default class GameController {
@@ -8,6 +8,7 @@ export default class GameController {
     pixiApp;
 
     async loadingManifest() {
+        debugger;
         var request = new XMLHttpRequest();
         request.open("GET", "./pixiAssets.json");
         request.responseType = "json";
@@ -69,7 +70,7 @@ export default class GameController {
     }
 
     initialization() {
-        debugger;
+        //debugger;
         this.pixiApp = new PIXI.Application({ resizeTo: window, backgroundAlpha: 0 });
     }
 
