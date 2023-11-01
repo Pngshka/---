@@ -1,11 +1,9 @@
-class BallController {
+import PIXI from '../pixijsLibrary.js'
+
+export default class BallController {
     #ballElement;
     height;
     speed;
-
-    get ballElement() {
-        return this.#ballElement;
-    }
 
     constructor(spritesheet, pixiApp) {
         this.#ballElement = document.createElement('div');
@@ -16,6 +14,10 @@ class BallController {
         this.#ballElement.style.height = 100 + 'px';
         
         this.#animationInit(spritesheet, pixiApp);
+    }
+
+    get ballElement() {
+        return this.#ballElement;
     }
 
     play(){
@@ -29,6 +31,10 @@ class BallController {
     }
 
     #animationInit(spritesheet, pixiApp) {
+        debugger;
+        
+        spritesheet.parse();
+        
         this.animBall = new PIXI.AnimatedSprite(spritesheet.animations.enemy);
 
         this.animBall.scale.set(0.7);

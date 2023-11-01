@@ -1,4 +1,7 @@
-class GameController {
+import * as PIXI from '../pixijsLibrary.js'
+import BallController from './BallController'
+
+export default class GameController {
     ballController;
     animationController;
     spritesheet;
@@ -66,10 +69,12 @@ class GameController {
     }
 
     initialization() {
+        debugger;
         this.pixiApp = new PIXI.Application({ resizeTo: window, backgroundAlpha: 0 });
     }
 
     initLevel() {
+        debugger;
         this.ballController = new BallController(this.spritesheet, this.pixiApp);
         this.animationController = new AnimationController(ballController.ballElement());
     }
@@ -77,4 +82,4 @@ class GameController {
     playing(){
         
     }
-}
+} 
