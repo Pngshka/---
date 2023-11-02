@@ -1,22 +1,28 @@
-import * as PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js'
 import BallController from './BallController'
+import AnimationController from './AnimationController'
 
 export default class GameController {
     ballController;
-    animationController;
+    animationController = 10;
     spritesheet;
     pixiApp;
+    count=0;
+
+    // constructor(){
+    //     console.log('COUNT!!!!')
+    //     this.count = 0;
+    // }
 
     async loadingManifest() {
-        debugger;
-        var request = new XMLHttpRequest();
-        request.open("GET", "./pixiAssets.json");
-        request.responseType = "json";
-        request.send();
-        request.onload = function () {
-            var test = request.response;
-            console.log(test["speed"]);
-        };
+        // var request = new XMLHttpRequest();
+        // request.open("GET", "./pixiAssets.json");
+        // request.responseType = "json";
+        // request.send();
+        // request.onload = function () {
+        //     var test = request.response;
+        //     console.log(test["speed"]);
+        // };
 
         this.atlasData = {
             frames: {
@@ -70,17 +76,33 @@ export default class GameController {
     }
 
     initialization() {
+        // for (let i=1; i<10000000;i++){
+
+        // }
         //debugger;
         this.pixiApp = new PIXI.Application({ resizeTo: window, backgroundAlpha: 0 });
     }
 
-    initLevel() {
+    async initLevel() {
+        console.log("initLevel____________________");
+        //скопировать с примера асинковый деспатч
+        //debugger;
+        this.ballController = await new BallController();
         debugger;
-        this.ballController = new BallController(this.spritesheet, this.pixiApp);
-        this.animationController = new AnimationController(ballController.ballElement());
+        this.animationController = await new AnimationController(this.ballController.ballElement);
+        //await this.ballController.animationInit(this.spritesheet, this.pixiApp);
     }
 
-    playing(){
-        
+    playing() {
+        console.log("playing__________________");
+        debugger;
+
+        document.body.addEventListener('click', async()=> {
+            debugger;
+            console.log(this.count);
+            this.count++;
+            if (this.count === 1)
+                 await this.animationController.animateObject(this.count);
+        })
     }
 } 

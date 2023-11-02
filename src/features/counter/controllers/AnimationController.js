@@ -1,11 +1,13 @@
-class AnimationController {
+export default class AnimationController {
     animBall;
+    //count;
+    
     constructor(animBall) {
         this.animBall = animBall;
     }
 
-    async animateObject() {
-        if (this.count === 0)
+    async animateObject(count) {
+        if (count === 0)
             return;
 
         function sineEase(repeat = 1, attenuation = 0) {

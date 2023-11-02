@@ -1,27 +1,27 @@
-import PIXI from '../pixijsLibrary.js'
+import * as PIXI from 'pixi.js'
 
 export default class BallController {
-    #ballElement;
+    ballElement;
     height;
     speed;
 
-    constructor(spritesheet, pixiApp) {
-        this.#ballElement = document.createElement('div');
+    constructor() {
+        this.ballElement = document.createElement('div', { className: 'greeting' });
         this.height = 1;
         this.speed = 0.192;
 
-        this.#ballElement.style.width = 100 + 'px';
-        this.#ballElement.style.height = 100 + 'px';
+        this.ballElement.style.width = 100 + 'px';
+        this.ballElement.style.height = 100 + 'px';
         
-        this.#animationInit(spritesheet, pixiApp);
+        //this.animationInit(spritesheet, pixiApp);
     }
 
-    get ballElement() {
-        return this.#ballElement;
-    }
+    // get ballElement() {
+    //     return this.ballElement;
+    // }
 
     play(){
-        this.#ballElement.addEventListener('click', function () {
+        this.ballElement.addEventListener('click', function () {
             this.count++;
             if (this.count === 1)
                 this.animateBall();
@@ -30,10 +30,10 @@ export default class BallController {
         //this.ball.appendChild(this.#pixiApp.view);
     }
 
-    #animationInit(spritesheet, pixiApp) {
-        debugger;
-        
-        spritesheet.parse();
+    async animationInit(spritesheet, pixiApp) {
+        //debugger;
+
+        //await spritesheet.parse();
         
         this.animBall = new PIXI.AnimatedSprite(spritesheet.animations.enemy);
 

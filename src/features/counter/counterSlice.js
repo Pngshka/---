@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchCount } from './counterAPI';
+import { fetchState, fetchStateSecond } from './counterAPI';
 
 const initialState = {
   value: 0,
@@ -11,14 +11,25 @@ const initialState = {
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched. Thunks are
 // typically used to make async requests.
-export const incrementAsync = createAsyncThunk(
-  'counter/fetchCount',
+export const loadingManifest = createAsyncThunk(
+  'counter/fetchState',
   async (amount) => {
-    const response = await fetchCount(amount);
+    const response = await fetchState(amount);
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
 );
+
+export const initLevel = createAsyncThunk(
+  'counter/fetchStateSecond',
+  async (amount) => {
+    const response = await fetchStateSecond(amount);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
+
 
 export const counterSlice = createSlice({
   name: 'counter',

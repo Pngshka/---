@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  loadingManifest,
+  //loadingManifest,
   loadingAssets, 
   initialization, 
   initLevel, 
@@ -12,8 +12,8 @@ import {
 import GameController from './controllers/GameController';
 
 const nextStateMap = {
-  loadingManifest: loadingAssets,
-  loadingAssets: initialization, 
+  loadingManifest: initialization,
+  //loadingAssets: initialization, 
   initialization: initLevel, 
   initLevel: playing, 
   playing: null,
@@ -45,7 +45,8 @@ export function Game() {
     console.log(currentState);
     const nextStateDispatch = nextStateMap[currentState];
     console.log(nextStateDispatch);
-    dispatch(nextStateDispatch());
+    if (nextStateDispatch!=null)
+      dispatch(nextStateDispatch());
   }
 
   useEffect(() => {
