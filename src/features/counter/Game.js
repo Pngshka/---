@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   //loadingManifest,
-  loadingAssets, 
+  //loadingAssets, 
   initialization, 
   initLevel, 
   playing,
@@ -18,10 +18,12 @@ const nextStateMap = {
   initLevel: playing, 
   playing: null,
 }
+const gameController = new GameController();
+
 export function Game() {
   const currentState = useSelector(selectState);
   const dispatch = useDispatch();
-  const gameController = new GameController();
+
   //let initialState = 'loadingManifest';
 
   // async function testt() {
@@ -56,7 +58,7 @@ export function Game() {
 
   return (
     <div>
-      <h1>{currentState}</h1>
+      {currentState}
     </div>
   );
 }

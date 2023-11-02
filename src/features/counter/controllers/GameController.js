@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
-import BallController from './BallController'
-import AnimationController from './AnimationController'
+import {BallController} from './BallController.js'
+import {AnimationController} from './AnimationController'
 
 export default class GameController {
     ballController;
@@ -9,10 +9,11 @@ export default class GameController {
     pixiApp;
     count=0;
 
-    // constructor(){
-    //     console.log('COUNT!!!!')
-    //     this.count = 0;
-    // }
+    constructor(){
+        //debugger
+        this.ballController = new BallController();
+        this.animationController = new AnimationController(this.ballController.ballElement);
+    }
 
     async loadingManifest() {
         // var request = new XMLHttpRequest();
@@ -76,33 +77,35 @@ export default class GameController {
     }
 
     initialization() {
-        // for (let i=1; i<10000000;i++){
-
-        // }
-        //debugger;
         this.pixiApp = new PIXI.Application({ resizeTo: window, backgroundAlpha: 0 });
     }
 
-    async initLevel() {
+    initLevel() {
         console.log("initLevel____________________");
         //скопировать с примера асинковый деспатч
-        //debugger;
-        this.ballController = await new BallController();
-        debugger;
-        this.animationController = await new AnimationController(this.ballController.ballElement);
-        //await this.ballController.animationInit(this.spritesheet, this.pixiApp);
+        this.ballController = new BallController();
+        this.animationController = new AnimationController(this.ballController.ballElement);
     }
 
     playing() {
-        console.log("playing__________________");
-        debugger;
+        // for (let i=1; i<10000000;i++){
+
+        // }
+        // console.log("playing__________________");
+        // debugger;
+        //self = this;
 
         document.body.addEventListener('click', async()=> {
-            debugger;
+            //debugger;
             console.log(this.count);
             this.count++;
             if (this.count === 1)
-                 await this.animationController.animateObject(this.count);
+                {
+                    this.animationController.countSet(this.count);
+                    await this.animationController.animateObject();
+                    this.count = this.animationController.countGet();
+            } else this.animationController.countSet(this.count);
+            
         })
     }
 } 

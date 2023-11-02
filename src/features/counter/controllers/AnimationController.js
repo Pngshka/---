@@ -1,13 +1,25 @@
-export default class AnimationController {
+import gsap from "gsap";
+
+export class AnimationController {
     animBall;
-    //count;
-    
+    count;
+
     constructor(animBall) {
         this.animBall = animBall;
+        console.log('constructor-----------------AnimationController')
+        console.log(this.animBall)
     }
 
-    async animateObject(count) {
-        if (count === 0)
+    countSet(count){
+        this.count = count;
+    }
+
+    countGet(){
+        return this.count;
+    }
+
+    async animateObject() {
+        if (this.count === 0)
             return;
 
         function sineEase(repeat = 1, attenuation = 0) {
@@ -18,14 +30,14 @@ export default class AnimationController {
         }
 
         var anim = gsap.timeline()
-            .fromTo(ball, 2.0,
+            .fromTo(this.animBall, 2.0,
                 {
                     xPercent: "+=" + 0
                 },
                 {
                     xPercent: "+=" + 100, ease: "linear"
                 }, 0.0)
-            .fromTo(ball, 0.5,
+            .fromTo(this.animBall, 0.5,
                 {
                     yPercent: 0
                 },
@@ -33,15 +45,15 @@ export default class AnimationController {
                     yPercent: -100, ease: sineEase(1), repeat: 3
                 }, 0.0);
 
-        this.animBall.play();
+        //this.animBall.play();
         (await anim.play())
             .then(function () {
-                this.animBall.stop();
+                //this.animBall.stop();
                 this.count--;
                 this.isForward = !this.isForward;
                 console.log(12312321);
                 if (this.count > 0)
-                    this.animateBall();
+                    this.animateObject();
             }.bind(this));
 
     }
