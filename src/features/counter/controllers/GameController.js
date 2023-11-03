@@ -1,7 +1,7 @@
 //import dynamic from 'next/dynamic';
-import * as PIXI from 'pixi.js'
-import {BallController} from './BallController.js'
-import {AnimationController} from './AnimationController'
+//import * as PIXI from 'pixi.js'
+import { BallController } from './BallController.js'
+import { AnimationController } from './AnimationController'
 
 // const PIXI = dynamic(() => import('pixi.js'), {
 //     ssr: false,
@@ -12,11 +12,11 @@ export default class GameController {
     animationController;
     spritesheet;
     pixiApp;
-    count=0;
+    count = 0;
     atlasData;
     data;
 
-    constructor(){
+    constructor() {
         //debugger
     }
 
@@ -30,13 +30,23 @@ export default class GameController {
     }
 
     async initialization() {
-        this.spritesheet = new PIXI.Spritesheet(
-            PIXI.BaseTexture.from(this.atlasData.meta.image),
-            this.atlasData
-        );
-        await this.spritesheet.parse();
+        await import('pixi.js').then(PIXI => {
+            console.log('PIXI')
+            this.spritesheet = new PIXI.Spritesheet(
+                PIXI.BaseTexture.from(this.atlasData.meta.image),
+                this.atlasData
+            );
 
-        this.pixiApp = new PIXI.Application({ resizeTo: window, backgroundAlpha: 0 });
+
+            // this.spritesheet = new PIXI.Spritesheet(
+            //     PIXI.BaseTexture.from(this.atlasData.meta.image),
+            //     this.atlasData
+            // );
+            //await 
+            this.spritesheet.parse();
+
+            this.pixiApp = new PIXI.Application({ resizeTo: window, backgroundAlpha: 0 });
+        });
     }
 
     async initLevel() {
