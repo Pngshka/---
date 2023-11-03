@@ -16,6 +16,14 @@ export default class GameController {
     atlasData;
     data;
 
+    static get instance(){
+        if(!this._instance) this._instance =  new GameController();
+
+        return this._instance;
+    }
+
+    static _instance = null;
+
     constructor() {
         //debugger
     }

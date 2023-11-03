@@ -1,13 +1,5 @@
-import React, { lazy } from 'react';
-
-const Game = lazy(() => import('../features/counter/Game'));
-//import { Game } from '../features/counter/Game';
-
-
-// import dynamic from 'next/dynamic'
-// const Game = dynamic(() =>
-//   import('../features/counter/Game').then((game) => {game.Game()})
-// )
+import React from 'react';
+import { Game } from '../features/counter/Game';
 
 
 function App() {

@@ -1,52 +1,44 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  //loadingManifest,
-  //loadingAssets, 
-  initialization, 
-  initLevel, 
-  playing,
-  selectState,
-} from './gameSlice';
-import GameController from './controllers/GameController';
 
-
-const nextStateMap = {
-  loadingManifest: initialization,
-  //loadingAssets: initialization, 
-  initialization: initLevel, 
-  initLevel: playing, 
-  playing: null,
+export const states = {
+  loadingManifest: {nextState: "initialization" },
+  initialization: {nextState: "initLevel" },
+  initLevel: {nextState: "playing" },
+  playing: {nextState: "null" },
 }
-const gameController = new GameController();
+
 
 export default function Game() {
   const currentState = useSelector(selectState);
   const dispatch = useDispatch();
+  const [controller, setController ]= useState();
 
-
+  debugger;
   function nextState(){
-    console.log(currentState);
-    console.log(gameController);
-    const nextStateDispatch = nextStateMap[currentState];
-    console.log(nextStateDispatch);
-    if (nextStateDispatch!=null)
-      dispatch(nextStateDispatch());
+      dispatch(nextState());
   }
 
+  useEffect(async()=>{
+      const {default: GameController} = await import("./controllers/GameController.js")
+      setController(GameController.instance);
+  }, [])
+
   useEffect(() => {
-    const temp = gameController[`${currentState}`]?.();
-    if (temp == null) { return nextState();  }
-    if (temp.constructor.name == 'Promise') {
-      //debugger
-      temp.then(nextState)
-    } else {
-      debugger;
+    let  isUnmounted =false;
+      if(!controller) return;
+    (async ()=>{
+      await controller[`${currentState}`]?.();
+      if(isUnmounted)return;
       nextState();
+    })()
+
+    return ()=>{
+      isUnmounted = true;
     }
     
-  }, [currentState]);
+  }, [currentState,controller]);
 
   return (
     <div>
