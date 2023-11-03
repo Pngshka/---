@@ -1,5 +1,5 @@
 //import dynamic from 'next/dynamic';
-//import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js'
 import {BallController} from './BallController.js'
 import {AnimationController} from './AnimationController'
 

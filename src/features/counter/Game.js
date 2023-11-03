@@ -11,6 +11,7 @@ import {
 } from './gameSlice';
 import GameController from './controllers/GameController';
 
+
 const nextStateMap = {
   loadingManifest: initialization,
   //loadingAssets: initialization, 
@@ -20,7 +21,7 @@ const nextStateMap = {
 }
 const gameController = new GameController();
 
-export function Game() {
+export default function Game() {
   const currentState = useSelector(selectState);
   const dispatch = useDispatch();
 
