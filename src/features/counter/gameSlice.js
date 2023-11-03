@@ -19,14 +19,23 @@ export const loadingManifest = createAsyncThunk(
   }
 );
 
-// export const initLevel = createAsyncThunk(
-//     'game/fetchStateSecond',
-//     async (amount) => {
-//       const response = await fetchStateSecond(amount);
-//       // The value we return becomes the `fulfilled` action payload
-//       return response.data;
-//     }
-//   );
+export const initialization = createAsyncThunk(
+    'game/fetchStateSecond',
+    async (amount) => {
+      const response = await fetchStateSecond(amount);
+      // The value we return becomes the `fulfilled` action payload
+      return response.data;
+    }
+  );
+
+  export const initLevel = createAsyncThunk(
+    'game/fetchStateThird',
+    async (amount) => {
+      const response = await fetchStateSecond(amount);
+      // The value we return becomes the `fulfilled` action payload
+      return response.data;
+    }
+  );
 
 export const gameSlice = createSlice({
     name: 'game',
@@ -39,9 +48,9 @@ export const gameSlice = createSlice({
         // loadingAssets: (state) => {
         //     state.status = 'loadingAssets';
         // },
-        initialization: (state) => {
-            state.status = 'initialization';
-        },
+        // initialization: (state) => {
+        //     state.status = 'initialization';
+        // },
         initLevel: (state) => {
             state.status = 'initLevel';
         },
@@ -66,7 +75,15 @@ export const gameSlice = createSlice({
         builder
       .addCase(loadingManifest.fulfilled, (state, action) => {
         // action is inferred correctly here if using TS
+        state.status = 'loadingManifest';
+      })
+      .addCase(initialization.fulfilled, (state, action) => {
+        // action is inferred correctly here if using TS
         state.status = 'initialization';
+      })
+      .addCase(initLevel.fulfilled, (state, action) => {
+        // action is inferred correctly here if using TS
+        state.status = 'initLevel';
       })
       // You can chain calls, or have separate `builder.addCase()` lines each time
       // .addCase(initLevel.fulfilled, (state, action) => {
@@ -84,7 +101,7 @@ export const gameSlice = createSlice({
 
 });
 
-export const { /*loadingManifest, loadingAssets,*/ initialization, initLevel, playing } = gameSlice.actions;
+export const { /*loadingManifest, loadingAssets, initialization, initLevel, */playing } = gameSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of

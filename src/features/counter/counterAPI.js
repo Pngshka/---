@@ -10,3 +10,9 @@ export function fetchStateSecond(amount = 1) {
     setTimeout(() => resolve({ data: amount }), 500)
   );
 }
+
+export function fetchStateThird(amount = 1) {
+  return new Promise((resolve) =>
+    setTimeout(() => resolve({ data: amount }), 500)
+  );
+}

@@ -24,27 +24,10 @@ export function Game() {
   const currentState = useSelector(selectState);
   const dispatch = useDispatch();
 
-  //let initialState = 'loadingManifest';
 
-  // async function testt() {
-  //   //debugger;
-  //   (new Promise((resolve) => {
-  //     dispatch(decrement());
-  //     resolve();
-  //   }))
-  //   .then(() => new Promise(resolve => {
-  //     console.log('123');
-  //     setTimeout(resolve, 1000);
-  //     console.log('dasdasd');
-  //   }))
-  //   .then(() => dispatch(increment()))
-  //   .then(() => new Promise(resolve => setTimeout(resolve, 1000)))
-  //   .then(() => dispatch(increment()))
-  //   .then(() => new Promise(resolve => setTimeout(resolve, 1000)))
-  //   .then(() => dispatch(decrement()))
-  // }
   function nextState(){
     console.log(currentState);
+    console.log(gameController);
     const nextStateDispatch = nextStateMap[currentState];
     console.log(nextStateDispatch);
     if (nextStateDispatch!=null)
@@ -52,8 +35,16 @@ export function Game() {
   }
 
   useEffect(() => {
-    gameController[`${currentState}`]?.();
-    nextState();
+    const temp = gameController[`${currentState}`]?.();
+    if (temp == null) { return nextState();  }
+    if (temp.constructor.name == 'Promise') {
+      //debugger
+      temp.then(nextState)
+    } else {
+      debugger;
+      nextState();
+    }
+    
   }, [currentState]);
 
   return (

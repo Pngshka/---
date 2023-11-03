@@ -1,13 +1,20 @@
 import gsap from "gsap";
+import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+
+gsap.registerPlugin(MotionPathPlugin);
 
 export class AnimationController {
     animBall;
     count;
 
-    constructor(animBall) {
+
+
+    constructor(animBall, config) {
         this.animBall = animBall;
         console.log('constructor-----------------AnimationController')
-        console.log(this.animBall)
+        this.speed = config.speed;
+        console.log( this.speed)
+
     }
 
     countSet(count){
@@ -29,31 +36,32 @@ export class AnimationController {
             };
         }
 
+        //debugger;
         var anim = gsap.timeline()
-            .fromTo(this.animBall, 2.0,
+            .fromTo(this.animationController.animBall, 2.0,
                 {
-                    xPercent: "+=" + 0
+                    x: "+=" + 0
                 },
                 {
-                    xPercent: "+=" + 100, ease: "linear"
+                    x: "+=" + 100, ease: "linear"
                 }, 0.0)
-            .fromTo(this.animBall, 0.5,
+            .fromTo(this.animationController.animBall, 0.5,
                 {
-                    yPercent: 0
+                    y: 0
                 },
                 {
-                    yPercent: -100, ease: sineEase(1), repeat: 3
+                    y: -100, ease: sineEase(1), repeat: 3
                 }, 0.0);
 
-        //this.animBall.play();
+        this.animationController.animBall.play();
         (await anim.play())
             .then(function () {
-                //this.animBall.stop();
+                this.animationController.animBall.stop();
                 this.count--;
                 this.isForward = !this.isForward;
                 console.log(12312321);
                 if (this.count > 0)
-                    this.animateObject();
+                    this.animationController.animateObject.bind(this)();
             }.bind(this));
 
     }
