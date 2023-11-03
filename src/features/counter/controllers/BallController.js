@@ -6,17 +6,18 @@ export class BallController {
     height;
     speed;
 
-    constructor(spritesheet) {
+    constructor(spritesheet, config) {
+        this.speed = config.speed;
         this.animBall = new PIXI.AnimatedSprite(spritesheet.animations.enemy);
     }
 
     async animationInit(pixiApp) {
 
         this.animBall.scale.set(0.7);
-        this.animBall.x = 560;
-        this.animBall.y = 180;
+        this.animBall.x = 160;
+        this.animBall.y = 200;
 
-        this.animBall.animationSpeed = 0.191;
+        this.animBall.animationSpeed =this.speed;
         pixiApp.stage.addChild(this.animBall);
     }
 

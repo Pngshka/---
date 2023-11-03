@@ -42,7 +42,7 @@ export default class GameController {
     async initLevel() {
         //debugger;
         document.body.appendChild(this.pixiApp.view);
-        this.ballController = new BallController(this.spritesheet);
+        this.ballController = new BallController(this.spritesheet, this.data);
         this.animationController = new AnimationController(this.ballController.animBall, this.data);
         //debugger;
         await this.ballController.animationInit(this.pixiApp);

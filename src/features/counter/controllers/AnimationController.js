@@ -6,7 +6,8 @@ gsap.registerPlugin(MotionPathPlugin);
 export class AnimationController {
     animBall;
     count;
-
+    speed;
+    height;
 
 
     constructor(animBall, config) {
@@ -14,6 +15,7 @@ export class AnimationController {
         console.log('constructor-----------------AnimationController')
         this.speed = config.speed;
         console.log( this.speed)
+        this.height=config.height
 
     }
 
@@ -47,10 +49,10 @@ export class AnimationController {
                 }, 0.0)
             .fromTo(this.animationController.animBall, 0.5,
                 {
-                    y: 0
+                    y: 200
                 },
                 {
-                    y: -100, ease: sineEase(1), repeat: 3
+                    y: this.animationController.height, ease: sineEase(1), repeat: 3
                 }, 0.0);
 
         this.animationController.animBall.play();
