@@ -17,8 +17,11 @@ export const gameSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     nextState: (state) => {
-      debugger;
-      state.status = states;
+      if (state.status === "playing") return;
+      //debugger;
+      const realNextState = states[state.status].nextState;
+      state.status = realNextState;
+      console.log(state.status);
          ///state.status =  // state.status;states
     },
     // loadingManifest: (state) => {
@@ -40,12 +43,12 @@ export const gameSlice = createSlice({
 
 });
 
-// export const { /*loadingManifest, loadingAssets,*/ initialization, initLevel, playing } = gameSlice.actions;
+export const { nextState } = gameSlice.actions;
 
 // // The function below is called a selector and allows us to select a value from
 // // the state. Selectors can also be defined inline where they're used instead of
 // // in the slice file. For example: `useSelector((state: RootState) => state.game.status)`
-// export const selectState = (state) => state.game.status;
+export const selectState = (state) => state.game.status;
 
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.
