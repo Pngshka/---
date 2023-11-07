@@ -120,7 +120,7 @@ export default class Game3DController {
     
 
         //this.renderer.resize();
-        this.renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+        this.renderer.setSize(window.innerWidth / 2, window.innerWidth / 2);
         this.renderer.render(this.scene, this.camera);
     }
 
@@ -160,7 +160,7 @@ export default class Game3DController {
     onResize(){
         let height = window.innerHeight;
         let width = window.innerWidth;
-        this.renderer.setSize(width/2, height/2);
+        this.renderer.setSize(width/2, width/2);
         this.renderer.render(this.scene, this.camera);
     }
 
