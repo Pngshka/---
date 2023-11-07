@@ -25,20 +25,20 @@ export default function Game() {
   }
 
   useEffect(() => {
-    (async () => {const { default: GameController } = await import("./controllers/GameController.js")
-    setController(GameController.instance);})();
+    (async () => {const { default: Game3DController } = await import("./controllers/Game3DComtroller")
+    setController(Game3DController.instance);})();
   }, [])
 
   useEffect(() => {
-    console.log('curr' + currentState);
+    //console.log('curr' + currentState);
     let isUnmounted = false;
     if (!controller) return;
     (async () => {
       await controller[`${currentState}`]?.();
       if (isUnmounted) return;
       nextStateGame.bind(this)();
-      const test = currentState;
-      console.log(test);
+      //const test = currentState;
+      //console.log(test);
     })();
 
     return () => {

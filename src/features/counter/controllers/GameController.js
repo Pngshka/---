@@ -23,11 +23,7 @@ export default class GameController {
     }
 
     static _instance = null;
-
-    constructor() {
-        //debugger
-    }
-
+    
     async loadingManifest() {
 
         const response = await fetch('/pixiAssetsMy.json')
