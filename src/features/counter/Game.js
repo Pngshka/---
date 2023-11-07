@@ -5,14 +5,6 @@ import {
   nextState, selectState
 } from './gameSlice';
 
-export const states = {
-  'loadingManifest': { nextState: "initialization" },
-  'initialization': { nextState: "initLevel" },
-  'initLevel': { nextState: "playing" },
-  'playing': { nextState: "null" },
-}
-
-
 export default function Game() {
   const currentState = useSelector(selectState);
   
@@ -30,15 +22,12 @@ export default function Game() {
   }, [])
 
   useEffect(() => {
-    //console.log('curr' + currentState);
     let isUnmounted = false;
     if (!controller) return;
     (async () => {
       await controller[`${currentState}`]?.();
       if (isUnmounted) return;
       nextStateGame.bind(this)();
-      //const test = currentState;
-      //console.log(test);
     })();
 
     return () => {
@@ -49,6 +38,7 @@ export default function Game() {
 
   return (
     <div>
+      <div id='div'></div>
       {currentState}
     </div>
   );

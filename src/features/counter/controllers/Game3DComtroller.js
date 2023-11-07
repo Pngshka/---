@@ -1,19 +1,17 @@
 import gsap from "gsap";
+import Game from '../Game';
 
 export default class Game3DController {
-    ballController;
-    animationController;
-    randOXY;
-    randValue;
     render;
     renderer;
     container;
     scene;
     camera;
-    geometry;
+    geometry; 
     material;
     cube;
     count = 1;
+    _doc;
 
     constructor() {}
 
@@ -30,19 +28,24 @@ export default class Game3DController {
     async initialization() {
         this.container = document.createElement('div');
         this.container.id = 'CanvasFrame';
-        document.body.appendChild(this.container);
+        this._doc = document.getElementById('div');
+        this._doc.appendChild(this.container);
 
         this.elementRemoveScene = document.createElement('button');
         this.elementRemoveScene.textContent = 'RemoveScene';
         this.elementRemoveScene.id = 'RemoveScene';
-        document.body.appendChild(this.elementRemoveScene);
+        this._doc.appendChild(this.elementRemoveScene);
 
         this.element = document.createElement('button');
         this.element.textContent = 'AddScene';
         this.element.id = 'AddScene';
-        document.body.appendChild(this.element);
+        this._doc.appendChild(this.element);
 
-        const THREE = await import('three');
+        window.addEventListener('resize', function () {
+            this.onResize();
+        }.bind(this))
+
+        var THREE = await import('three');
         this.scene = new THREE.Scene();
 
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -82,28 +85,22 @@ export default class Game3DController {
         });
 
         this.cube = new THREE.Mesh(this.geometry, this.material);
-        this.cube.position.z = 3;
-        this.cube.position.y = 0;
-        this.cube.position.x = 0;
+        this.cube.position.set(0, 0, 3);
 
         this.material.uniforms = {
             color1: { value: new THREE.Vector3(1, 1, 1) },
             color2: { value: new THREE.Vector3(1, 0, 0) }
         };
 
-    }
+    } 
 
     async initLevel() {
         this.loadThreeJS();
     }
 
     playing() {
-
         this.element.addEventListener('click', function () {
-            if (this.count === 0) {
-                this.count++;
-                this.loadThreeJS();
-            }
+            this.onClick(true);
         }.bind(this))
 
         this.container.addEventListener('click', function () {
@@ -117,35 +114,21 @@ export default class Game3DController {
     }
 
     async animateObject() {
-        const THREE = await import('three');
-        //console.log('loadThreeJS')
-        this.rand();
-        switch (this.randOXY) {
-            case 0:
-                console.log('123');
-                //cube.rotation.x += randValue;
-                gsap.to(this.cube.rotation, { x: this.randValue });
-                break;
-            case 1:
-                gsap.to(this.cube.rotation, { y: this.randValue });
-                break;
-            case 2:
-                gsap.to(this.cube.rotation, { z: this.randValue });
-                break;
-        }
+        const {randOXY,randValue} =  this.rand();
+        const axis = ["x", "y", "z"][randOXY];
+        gsap.to(this.cube.rotation, { [axis]: randValue });
+    
 
+        //this.renderer.resize();
+        this.renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
         this.renderer.render(this.scene, this.camera);
     }
 
     rand() {
-        this.randOXY = Math.floor(Math.random() * 3);
-        this.randValue = Math.floor(Math.random() * 360);
+        return {randOXY:Math.floor(Math.random() * 3), randValue: Math.floor(Math.random() * 360)}
     }
 
     async loadThreeJS() {
-        console.log('Btn')
-
-        const THREE = await import('three');
         this.container = document.getElementById('CanvasFrame');
 
         this.container.appendChild(this.renderer.domElement);
@@ -153,18 +136,33 @@ export default class Game3DController {
         this.container.style.left = 300 + 'px';
 
         this.elementRemoveScene.addEventListener('click', function () {
-            if (this.count === 1) {
-                this.count--;
-                this.removeThreeJS(this.renderer.domElement);
-            }
+            this.onClick(false);
         }.bind(this))
 
         this.scene.add(this.cube);
 
         this.animateObject();
-
-        // this.container.addEventListener('click', function () {
-        //     this.animateObject();
-        // }.bind(this))
     }
+
+    onClick(flag){
+        if (flag && this.count === 0){
+            this.count++;
+            this.loadThreeJS();
+            return;
+        }
+        if (!flag && this.count === 1){
+            this.count--
+            this.removeThreeJS(this.renderer.domElement);
+            return;
+        }
+    }
+
+    onResize(){
+        let height = window.innerHeight;
+        let width = window.innerWidth;
+        this.renderer.setSize(width/2, height/2);
+        this.renderer.render(this.scene, this.camera);
+    }
+
+
 }

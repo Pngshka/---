@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import {states} from './Game.js'
+import {STATES} from './gameConstants'
 
 const initialState = {
   status: 'loadingManifest',
@@ -19,7 +19,7 @@ export const gameSlice = createSlice({
     nextState: (state) => {
       if (state.status === "playing") return;
       //debugger;
-      const realNextState = states[state.status].nextState;
+      const realNextState = STATES[state.status].nextState;
       state.status = realNextState;
       console.log(state.status);
          ///state.status =  // state.status;states
