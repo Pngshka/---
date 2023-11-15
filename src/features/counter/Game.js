@@ -17,8 +17,8 @@ export default function Game() {
   }
 
   useEffect(() => {
-    (async () => {const { default: Game3DController } = await import("./controllers/Game3DComtroller")
-    setController(Game3DController.instance);})();
+    (async () => {const { default: GameControllerTetris } = await import("./controllers/GameControllerTetris")
+    setController(GameControllerTetris.instance);})();
   }, [])
 
   useEffect(() => {
