@@ -1,5 +1,5 @@
 import {AnimationControllerTetris} from './AnimationControllerTetris.js'
-import {Utilities, getClass} from './Utilities.js'
+import {Utilities, getClass, getClassByMap} from './Utilities.js'
 import I from './I.js'
 import T from './T.js'
 
@@ -145,7 +145,13 @@ export default class GameControllerTetris {
        const axis = ["T", "I"][randValue];
 
        //console.log(`${axis}`);
-       var x = getClass(`${axis}`)
+       //debugger;
+       const classes = {
+            "I":I,
+            "T":T
+       };//Переделать в Map
+       let x = getClassByMap(classes, `${axis}`)
+       //debugger;
        this.figure = new x();
        //eval(this.figure = new ${axis}(););
 

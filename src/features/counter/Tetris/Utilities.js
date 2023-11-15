@@ -33,3 +33,7 @@ export function getClass(name) {
     }
     return _cls_[name];
 }
+
+export function getClassByMap(map, name) {
+    return map[name];
+}
