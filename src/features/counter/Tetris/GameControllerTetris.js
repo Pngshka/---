@@ -1,7 +1,9 @@
 import {AnimationControllerTetris} from './AnimationControllerTetris.js'
-import {Utilities, getClass, getClassByMap} from './Utilities.js'
+import Utilities from './Utilities.js'
 import I from './I.js'
 import T from './T.js'
+import cube from './cube.js'
+import Z from './Z.js'
 
 
 export default class GameControllerTetris {
@@ -17,60 +19,54 @@ export default class GameControllerTetris {
     matrix;
 
     //позиция считается с левого верхнего угла, позиция на поле
-    positionFigureX; //вычисляется случайно
+    positionFigureX; 
     positionFigureY;
 
-    flag;
-
     constructor() {
-        
         this.utilities = new Utilities();
-        this.getNextFigure();
         this.matrix = Array(20).fill().map(() => Array(10).fill(0));
-
-        // this.matrix = [];
-        // for (let i = 0; i < this.row; i++) {
-        //     //переписать matrix как массив объектов: цвет, 1/0
-        //     this.matrix[i] = []
-        //     for (let j = 0; j < this.col; j++) {
-        //         this.matrix[i][j] = 0;
-        //     }
-        // }
-
+        this.getNextFigure();
         this.animationControllerTetris = new AnimationControllerTetris();
-        setInterval(() => this.mainLoop(), 500);
+        setInterval(() => this.mainLoop(), 300);
     };
 
-    chekingClicks(flag) {
-        if (flag === 'left') {
-            if (this.isValidMove(this.figure.matrix, this.positionFigureY, this.positionFigureX - 1)) {
+    chekingClicks(code) {
+        if (code === 'left') {
+            if (this.cheking(this.figure.matrix, this.positionFigureY, this.positionFigureX - 1)) {
                 this.positionFigureX--;
             }
         }
 
-        if (flag === 'right') {
-            if (this.isValidMove(this.figure.matrix, this.positionFigureY, this.positionFigureX + 1)) {
+        if (code === 'right') {
+            if (this.cheking(this.figure.matrix, this.positionFigureY, this.positionFigureX + 1)) {
                 this.positionFigureX++;
             }
         }
 
         //to do: переписать нормально
-        if (flag === 'top') {
-            console.log('top');
+        let rotate = this.rotate(this.figure.matrix);
+        if (code === 'top') {
 
-            if (this.isValidMove(this.rotate(this.figure.matrix), this.positionFigureY, this.positionFigureX)) {
-                this.figure.matrix = this.rotate(this.figure.matrix);
-            } else{
-                if (this.isValidMove(this.rotate(this.figure.matrix), this.positionFigureY, this.positionFigureX + 1)) {
-                    this.figure.matrix = this.rotate(this.figure.matrix);
-                    this.positionFigureX++;
-                } else {
-                    if (this.isValidMove(this.rotate(this.figure.matrix), this.positionFigureY, this.positionFigureX - 1)) {
-                        this.figure.matrix = this.rotate(this.figure.matrix);
-                        this.positionFigureX--;
-                    }
-                }
+            if (this.cheking(rotate, this.positionFigureY, this.positionFigureX)) {
+                this.figure.matrix = rotate;
+                return;
+            } 
+
+            let count = this.figure.col / 2
+            
+            console.log('count---------' + count);
+            if (this.cheking(rotate, this.positionFigureY, this.positionFigureX + count)) {
+                this.figure.matrix = rotate;
+                this.positionFigureX+=count;
+                return;
+            } 
+            if (this.cheking(rotate, this.positionFigureY, this.positionFigureX - count)) {
+                this.figure.matrix = rotate;
+                this.positionFigureX-=count;
+                return;
             }
+            
+        
         }
 
     }
@@ -96,28 +92,15 @@ export default class GameControllerTetris {
         //           [1, 0]];
     }
 
-    gameOver() {
-
-    }
-
-    isValidMove(matrix, cellRow, cellCol) {
-        // проверяем все строки и столбцы
+    cheking(matrix, cellRow, cellCol) {
         for (let row = 0; row < matrix.length; row++) {
             for (let col = 0; col < matrix[row].length; col++) {
-                if (matrix[row][col] && (
-                    // если выходит за границы поля…
-                    cellCol + col < 0 ||
-                    cellCol + col >= this.matrix[0].length ||
-                    cellRow + row >= this.matrix.length ||
-                    // …или пересекается с другими фигурами
-                    this.matrix[cellRow + row][cellCol + col])
-                ) {
-                    // то возвращаем, что нет, так не пойдёт
+                if (matrix[row][col] 
+                    && (cellCol + col < 0 || cellCol + col >= this.matrix[0].length || cellRow + row >= this.matrix.length ||this.matrix[cellRow + row][cellCol + col])) {
                     return false;
                 }
             }
         }
-        // а если мы дошли до этого момента и не закончили раньше — то всё в порядке
         return true;
     }
 
@@ -125,80 +108,74 @@ export default class GameControllerTetris {
         console.log('mainLoop-----------' + (this.positionFigureX, this.positionFigureY))
 
 
-        this.positionFigureY++; //tetromino.row++;
-
-        // если движение закончилось — рисуем фигуру в поле и проверяем, можно ли удалить строки
-        if (!this.isValidMove(this.figure.matrix, this.positionFigureY, this.positionFigureX)) {
+        this.positionFigureY++;
+        if (!this.cheking(this.figure.matrix, this.positionFigureY, this.positionFigureX)) {
             this.positionFigureY--;
-            this.placeTetromino();
+            this.drawFigure();
         }
-
-
         this.animationControllerTetris.initialization(this.matrix, this.figure, this.positionFigureY, this.positionFigureX);
-        //this.animationControllerTetris.drawField(this.matrix);
-
     }
 
     getNextFigure() {
-       // тут — сами фигуры
        const { randValue, randCol } = this.utilities.rand();
-       const axis = ["T", "I"][randValue];
+       const axis = [T, I, cube, Z][randValue];
 
-       //console.log(`${axis}`);
-       //debugger;
-       const classes = {
-            "I":I,
-            "T":T
-       };//Переделать в Map
-       let x = getClassByMap(classes, `${axis}`)
-       //debugger;
-       this.figure = new x();
+        //    const classes = {
+        //         "I":I,
+        //         "T":T
+        //    };//to do: Переделать в Map
+        //   let x = this.utilities.getClassByMap(classes, `${axis}`)
+
+       this.figure = new axis();
        //eval(this.figure = new ${axis}(););
 
        this.figure.row = this.figure.row;
        this.figure.col = this.figure.col;
        console.log(this.figure.row, this.figure.col)
 
-       this.positionFigureX = 5; //вычисляется случайно
+       this.positionFigureX = 4; //вычисляется случайно
        this.positionFigureY = 0;
+
+        for (let row = 0; row < this.figure.matrix.length; row++) {
+            for (let col = 0; col < this.figure.matrix[row].length; col++) {
+                if (this.figure.matrix[row][col] && this.matrix[this.positionFigureY + row][this.positionFigureX + col]) {
+                    this.gameOver();
+
+                    
+                }
+            }
+        }
     }
 
-    placeTetromino() {
-        // обрабатываем все строки и столбцы в игровом поле
+    drawFigure() {
         for (let row = 0; row < this.figure.matrix.length; row++) {
             for (let col = 0; col < this.figure.matrix[row].length; col++) {
                 if (this.figure.matrix[row][col]) {
-
-                    // если край фигуры после установки вылезает за границы поля, то игра закончилась
-                    if (this.positionFigureY + row < 0) {
-                        return showGameOver();
-                    }
-                    // если всё в порядке, то записываем в массив игрового поля нашу фигуру
                     this.matrix[this.positionFigureY + row][this.positionFigureX + col] = 1;
                     
                 }
             }
         }
 
-        // проверяем, чтобы заполненные ряды очистились снизу вверх
         for (let row = this.matrix.length - 1; row >= 0;) {
-            // если ряд заполнен
             if (this.matrix[row].every(cell => !!cell)) {
-
-                // очищаем его и опускаем всё вниз на одну клетку
-                for (let r = row; r >= 0; r--) {
-                    for (let c = 0; c < this.matrix[r].length; c++) {
-                        this.matrix[r][c] = this.matrix[r - 1][c];
+                for (let i = row; i >= 0; i--) {
+                    for (let j = 0; j < this.matrix[i].length; j++) {
+                        this.matrix[i][j] = this.matrix[i - 1][j];
                     }
                 }
             }
             else {
-                // переходим к следующему ряду
                 row--;
             }
         }
-        console.log(this.matrix);
-        // получаем следующую фигуру
+       // console.log(this.matrix);
         this.getNextFigure();
+    }
+
+    gameOver(){
+        console.log('GameOver')
+        this.animationControllerTetris.remove()
+        this.matrix = Array(20).fill().map(() => Array(10).fill(0));
     }
 }

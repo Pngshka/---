@@ -1,12 +1,12 @@
 import I from './I.js'
 import T from './T.js'
 
-export class Utilities{
+export default class Utilities{
 
     constructor(){}
     
     rand() {
-        return { randValue: Math.floor(Math.random() * 2), randCol: Math.floor(Math.random() * 10) };
+        return { randValue: Math.floor(Math.random() * 4), randCol: Math.floor(Math.random() * 10) };
     }
 
     // getClass(name) {
@@ -20,20 +20,8 @@ export class Utilities{
     //     }
     //     return _cls_[name];
     // }
-}
 
-export function getClass(name) {
-    let _cls_ = {};
-    if (!_cls_[name]) {
-        if (name.match(/^[a-zA-Z0-9_]+$/)) {
-            _cls_[name] = eval(name);
-        } else {
-            throw new Error("Who let the dogs out?");
-        }
+    getClassByMap(map, name) {
+        return map[name];
     }
-    return _cls_[name];
-}
-
-export function getClassByMap(map, name) {
-    return map[name];
 }

@@ -3,7 +3,7 @@
 import * as THREE from 'three'
 
 export class AnimationControllerTetris {
-    cube2;
+    cubeF;
     cube;
     renderer;
     camera;
@@ -14,7 +14,6 @@ export class AnimationControllerTetris {
     material;
 
     constructor() {
-        //this.initialization();
         this.container = document.createElement('div');
         this.container.id = 'CanvasFrame';
         this._doc = document.getElementById('div');
@@ -32,6 +31,7 @@ export class AnimationControllerTetris {
 
         this.geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
         this.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        this.materialF = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 
          //-----------------------------------------------------------------------------------
@@ -46,19 +46,15 @@ export class AnimationControllerTetris {
     initialization(matrix, figure, positionFigureY, positionFigureX) {
 
         this.scene.remove.apply(this.scene, this.scene.children);
-        // Создайте цикл для добавления нескольких одинаковых объектов
         for (let i = 0; i < 20; i++) {
             for (let j = 0; j < 10; j++) {
                 if (matrix[i][j]) {
-                    // Создайте Mesh объект, используя геометрию и материал
-                    this.cube = new THREE.Mesh(this.geometry, this.material);
+                    this.cubeF = new THREE.Mesh(this.geometry,this.materialF);
+    
+                    this.cubeF.position.x = j/10 * 1; 
+                    this.cubeF.position.y = -(i/10 * 1); 
 
-                    // Установите позицию каждого объекта
-                    this.cube.position.x = i/10 * 1; // Просто для примера, выставляет каждый объект в линию по X-оси
-                    this.cube.position.y = j/10 * 1; // Просто для примера, выставляет каждый объект в линию по X-оси
-
-                    // Добавьте каждый объект в сцену
-                    this.scene.add(this.cube);
+                    this.scene.add(this.cubeF);
                 }
             }
         }
@@ -66,15 +62,13 @@ export class AnimationControllerTetris {
         for (let row = 0; row < figure.matrix.length; row++) {
             for (let col = 0; col < figure.matrix[row].length; col++) {
                 if (figure.matrix[row][col]) {
-
                     this.cube = new THREE.Mesh(this.geometry, this.material);
-                    // если край фигуры после установки вылезает за границы поля, то игра закончилась
+                    this.cube.material.color.set( figure.color );
                     if (positionFigureY + row < 0) {
                         break;
                     }
-
-                    this.cube.position.x = (positionFigureY + row)/10 * 1; // Просто для примера, выставляет каждый объект в линию по X-оси
-                    this.cube.position.y = (positionFigureX + col)/10 * 1; // Просто для примера, выставляет каждый объект в линию по X-оси
+                    this.cube.position.x = (positionFigureX + col)/10 * 1; 
+                    this.cube.position.y = -((positionFigureY + row)/10 * 1); 
                     this.scene.add(this.cube);
                 }
             }
@@ -82,6 +76,11 @@ export class AnimationControllerTetris {
 
         this.renderer.render(this.scene, this.camera);
 
+    }
+
+    remove(){
+        this.scene.remove.apply(this.scene, this.scene.children);
+        this.renderer.render(this.scene, this.camera);
     }
 
 } 

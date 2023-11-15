@@ -3,6 +3,7 @@ export default class Figure{
     row;
     col;
     matrix;
+    color;
 
     getMatrix(){
         return this.matrix;
