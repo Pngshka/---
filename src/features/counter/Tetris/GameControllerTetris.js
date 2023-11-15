@@ -4,6 +4,7 @@ import I from './I.js'
 import T from './T.js'
 import cube from './cube.js'
 import Z from './Z.js'
+import {COL, ROW} from '../gameConstants.js'
 
 
 export default class GameControllerTetris {
@@ -11,20 +12,21 @@ export default class GameControllerTetris {
     utilities;
 
     figure;
-    field;
-
-    //row, matrix и col поля
-    row = 20;
-    col = 10;
     matrix;
 
-    //позиция считается с левого верхнего угла, позиция на поле
-    positionFigureX; 
-    positionFigureY;
+    //to do: поменять камеру
+        //очертить границы поля
+        //вынести константы
+        //config
+        //свет
+        //dataTime
+        //фабрика: после удаления линии использовать кубы в отрисовке следующей фигуры
+        //to do: поправит I
+        //dpr
 
     constructor() {
         this.utilities = new Utilities();
-        this.matrix = Array(20).fill().map(() => Array(10).fill(0));
+        this.matrix = Array(ROW).fill().map(() => Array(COL).fill(0));
         this.getNextFigure();
         this.animationControllerTetris = new AnimationControllerTetris();
         setInterval(() => this.mainLoop(), 300);
@@ -32,37 +34,37 @@ export default class GameControllerTetris {
 
     chekingClicks(code) {
         if (code === 'left') {
-            if (this.cheking(this.figure.matrix, this.positionFigureY, this.positionFigureX - 1)) {
-                this.positionFigureX--;
+            if (this.cheking(this.figure.matrix, this.figure.positionY, this.figure.positionX - 1)) {
+                this.figure.positionX--;
             }
         }
 
         if (code === 'right') {
-            if (this.cheking(this.figure.matrix, this.positionFigureY, this.positionFigureX + 1)) {
-                this.positionFigureX++;
+            if (this.cheking(this.figure.matrix, this.figure.positionY,this.figure.positionX + 1)) {
+                this.figure.positionX++;
             }
         }
 
-        //to do: переписать нормально
+        //to do: поправит I
         let rotate = this.rotate(this.figure.matrix);
         if (code === 'top') {
 
-            if (this.cheking(rotate, this.positionFigureY, this.positionFigureX)) {
+            if (this.cheking(rotate, this.figure.positionY, this.figure.positionX)) {
                 this.figure.matrix = rotate;
                 return;
             } 
 
             let count = this.figure.col / 2
             
-            console.log('count---------' + count);
-            if (this.cheking(rotate, this.positionFigureY, this.positionFigureX + count)) {
+            //console.log('count---------' + count);
+            if (this.cheking(rotate, this.figure.positionY, this.figure.positionX + count)) {
                 this.figure.matrix = rotate;
-                this.positionFigureX+=count;
+                this.figure.positionX+=count;
                 return;
             } 
-            if (this.cheking(rotate, this.positionFigureY, this.positionFigureX - count)) {
+            if (this.cheking(rotate, this.figure.positionY, this.figure.positionX - count)) {
                 this.figure.matrix = rotate;
-                this.positionFigureX-=count;
+                this.figure.positionX-=count;
                 return;
             }
             
@@ -74,22 +76,13 @@ export default class GameControllerTetris {
     rotate(matrix) {
         console.log(matrix)
 
-        let n = matrix.length - 1;
-        let result = matrix.map((row, i) =>
+        const n = matrix.length - 1;
+        const result = matrix.map((row, i) =>
             row.map((val, j) => matrix[n - j][i])
         );
 
-
         console.log(result);
         return result;
-
-
-        // matrix = [[0, 1, 0],
-        //           [1, 1, 1]];
-
-        // matrix = [[1, 0],
-        //           [1, 1],
-        //           [1, 0]];
     }
 
     cheking(matrix, cellRow, cellCol) {
@@ -101,23 +94,30 @@ export default class GameControllerTetris {
                 }
             }
         }
+
+        //проверка пересечения фигур (переделать)
+        // for (let row = 0; row < matrix.length; row++) {
+        //     for (let col = 0; col < matrix[row].length; col++) {
+        //         if ( this.matrix[matrix.positionY + row][matrix.positionX + col] && matrix[row][col]) {
+        //             return false;
+        //         }
+        //     }
+        // }
+
         return true;
     }
 
     mainLoop() {
-        console.log('mainLoop-----------' + (this.positionFigureX, this.positionFigureY))
-
-
-        this.positionFigureY++;
-        if (!this.cheking(this.figure.matrix, this.positionFigureY, this.positionFigureX)) {
-            this.positionFigureY--;
+        this.figure.positionY++;
+        if (!this.cheking(this.figure.matrix, this.figure.positionY, this.figure.positionX)) {
+            this.figure.positionY--;
             this.drawFigure();
         }
-        this.animationControllerTetris.initialization(this.matrix, this.figure, this.positionFigureY, this.positionFigureX);
+        this.animationControllerTetris.initialization(this.matrix, this.figure, this.figure.positionY, this.figure.positionX);
     }
 
     getNextFigure() {
-       const { randValue, randCol } = this.utilities.rand();
+       const { randValue } = this.utilities.rand();
        const axis = [T, I, cube, Z][randValue];
 
         //    const classes = {
@@ -129,16 +129,16 @@ export default class GameControllerTetris {
        this.figure = new axis();
        //eval(this.figure = new ${axis}(););
 
-       this.figure.row = this.figure.row;
-       this.figure.col = this.figure.col;
-       console.log(this.figure.row, this.figure.col)
+    //    this.figure.row = this.figure.row;
+    //    this.figure.col = this.figure.col;
+    //    console.log(this.figure.row, this.figure.col)
 
-       this.positionFigureX = 4; //вычисляется случайно
-       this.positionFigureY = 0;
+       this.figure.positionX = 4;
+       this.figure.positionY = 0;
 
         for (let row = 0; row < this.figure.matrix.length; row++) {
             for (let col = 0; col < this.figure.matrix[row].length; col++) {
-                if (this.figure.matrix[row][col] && this.matrix[this.positionFigureY + row][this.positionFigureX + col]) {
+                if (this.figure.matrix[row][col] && this.matrix[this.figure.positionY + row][this.figure.positionX + col]) {
                     this.gameOver();
 
                     
@@ -151,7 +151,7 @@ export default class GameControllerTetris {
         for (let row = 0; row < this.figure.matrix.length; row++) {
             for (let col = 0; col < this.figure.matrix[row].length; col++) {
                 if (this.figure.matrix[row][col]) {
-                    this.matrix[this.positionFigureY + row][this.positionFigureX + col] = 1;
+                    this.matrix[this.figure.positionY + row][this.figure.positionX + col] = 1;
                     
                 }
             }
@@ -169,13 +169,12 @@ export default class GameControllerTetris {
                 row--;
             }
         }
-       // console.log(this.matrix);
         this.getNextFigure();
     }
 
     gameOver(){
         console.log('GameOver')
         this.animationControllerTetris.remove()
-        this.matrix = Array(20).fill().map(() => Array(10).fill(0));
+        this.matrix = Array(ROW).fill().map(() => Array(COL).fill(0));
     }
 }

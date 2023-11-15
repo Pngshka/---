@@ -13,7 +13,10 @@ export class AnimationControllerTetris {
     geometry;
     material;
 
+    //*dpr
+
     constructor() {
+        
         this.container = document.createElement('div');
         this.container.id = 'CanvasFrame';
         this._doc = document.getElementById('div');
@@ -23,6 +26,8 @@ export class AnimationControllerTetris {
 
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.camera.position.z = 3;
+
+        //this.camera = new THREE.OrthographicCamera(window.innerWidth / -window.innerHeight, window.innerWidth / window.innerHeight, window.innerWidth / window.innerHeight, window.innerWidth / -window.innerHeight, 1, 10000 );
 
 
         this.renderer = new THREE.WebGLRenderer();
@@ -44,6 +49,9 @@ export class AnimationControllerTetris {
     }
 
     initialization(matrix, figure, positionFigureY, positionFigureX) {
+        window.addEventListener('resize', function () {
+            this.onResize();
+        }.bind(this))
 
         this.scene.remove.apply(this.scene, this.scene.children);
         for (let i = 0; i < 20; i++) {
@@ -80,6 +88,13 @@ export class AnimationControllerTetris {
 
     remove(){
         this.scene.remove.apply(this.scene, this.scene.children);
+        this.renderer.render(this.scene, this.camera);
+    }
+
+    onResize(){
+        //let height = window.innerHeight;
+        let width = window.innerWidth;
+        this.renderer.setSize(width/2, width/2);
         this.renderer.render(this.scene, this.camera);
     }
 

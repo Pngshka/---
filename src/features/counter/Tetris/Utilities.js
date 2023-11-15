@@ -6,7 +6,7 @@ export default class Utilities{
     constructor(){}
     
     rand() {
-        return { randValue: Math.floor(Math.random() * 4), randCol: Math.floor(Math.random() * 10) };
+        return { randValue: Math.floor(Math.random() * 4) };
     }
 
     // getClass(name) {

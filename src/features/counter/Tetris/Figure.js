@@ -1,11 +1,14 @@
 export default class Figure{
-    name;
-    row;
-    col;
     matrix;
     color;
+    positionX; 
+    positionY;
 
-    getMatrix(){
-        return this.matrix;
+    get col(){
+        return this.matrix[0].length;
+    }
+
+    get row(){
+        return this.matrix.length;
     }
 }
