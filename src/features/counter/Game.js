@@ -38,8 +38,8 @@ export default function Game() {
 
   return (
     <div>
-      <div id='div'></div>
-      {currentState}
+      <div id='div' style={{overflow:"hidden", height:' 100vh'}}></div>
+      <div style={{position:"fixed", top:0, left:0}}> {currentState}</div>
     </div>
   );
 }

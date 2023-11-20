@@ -171,7 +171,6 @@ export default class GameControllerTetris {
             if (this.matrix[row].every(cell => !!cell)) {
                 for (let i = row; i > 0; i--) {
                     for (let j = 0; j < this.matrix[i].length; j++) {
-                        // console.log(i + '-------' + j)
                         this.matrix[i][j] = this.matrix[i - 1][j];
                     }
                 }
