@@ -76,7 +76,6 @@ export class KeyboardPlugin extends BasePlugin {
 
     isKeyPressed(keyCode) {
         const pressedKeys = {};
-        let flag = false;
 
         function keyPressed(event) {
             pressedKeys[event.keyCode] = true;

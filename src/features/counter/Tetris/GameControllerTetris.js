@@ -53,6 +53,7 @@ export default class GameControllerTetris {
         }
 
         if (code === 'right') {
+            console.log(this.matrix)
             if (this.cheking(this.figure.matrix, this.figure.positionY, this.figure.positionX + 1)) {
                 this.figure.positionX++;
             }
@@ -60,6 +61,7 @@ export default class GameControllerTetris {
 
         let rotate = this.rotate(this.figure.matrix);
         if (code === 'top') {
+
 
             if (this.cheking(rotate, this.figure.positionY, this.figure.positionX)) {
                 if (this.chekingRotate(this.matrix, this.figure, rotate)){
@@ -77,12 +79,20 @@ export default class GameControllerTetris {
                     return;
                 }
             }
-            if (this.cheking(rotate, this.figure.positionY, this.figure.positionX - count)) {
+            if (this.cheking(rotate, this.figure.positionY, this.figure.positionX - 1)) {
                 if (this.chekingRotate(this.matrix, this.figure, rotate)){
                     this.figure.matrix = rotate;
-                    this.figure.positionX -= count;
+                    this.figure.positionX -= 1;
                     return;
                 }
+            }
+        }
+
+        if (code === 'down') {
+            this.figure.positionY++;
+            if (!this.cheking(this.figure.matrix, this.figure.positionY, this.figure.positionX)) {
+                this.figure.positionY--;
+                this.drawFigure();
             }
         }
     }
@@ -125,7 +135,7 @@ export default class GameControllerTetris {
                 this.drawFigure();
             }
 
-            this.animationControllerTetris.initialization(this.matrix, this.figure, this.figure.positionY, this.figure.positionX, this.colorNow);
+            this.animationControllerTetris.runAnimation(this.matrix, this.figure, this.figure.positionY, this.figure.positionX, this.colorNow);
         }
     }
     
@@ -159,8 +169,9 @@ export default class GameControllerTetris {
 
         for (let row = this.matrix.length - 1; row >= 0;) {
             if (this.matrix[row].every(cell => !!cell)) {
-                for (let i = row; i >= 0; i--) {
+                for (let i = row; i > 0; i--) {
                     for (let j = 0; j < this.matrix[i].length; j++) {
+                        // console.log(i + '-------' + j)
                         this.matrix[i][j] = this.matrix[i - 1][j];
                     }
                 }
