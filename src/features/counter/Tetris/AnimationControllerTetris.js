@@ -1,66 +1,68 @@
-
-
 import * as THREE from 'three'
+import { COL, ROW, CUBE_GEOM, CUBE_POS } from '../gameConstants.js'
 
 export class AnimationControllerTetris {
+    cubeB;
     cubeF;
     cube;
     renderer;
     camera;
     container;
-    _doc;
     scene;
     geometry;
     material;
+    dpr;
+    data;
+    heightAndWidth;
+    canvas;
 
-    //*dpr
+    constructor(data) {
 
-    constructor() {
-        
+        this.data = data;
+        this.dpr = window.devicePixelRatio;
+
         this.container = document.createElement('div');
-        this.container.id = 'CanvasFrame';
-        this._doc = document.getElementById('div');
-        this._doc.appendChild(this.container);
 
         this.scene = new THREE.Scene();
-
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.z = 3;
-
-        //this.camera = new THREE.OrthographicCamera(window.innerWidth / -window.innerHeight, window.innerWidth / window.innerHeight, window.innerWidth / window.innerHeight, window.innerWidth / -window.innerHeight, 1, 10000 );
-
+        this.camera = new THREE.OrthographicCamera(window.innerHeight / -1000, window.innerHeight / 1000, window.innerHeight / 1000, window.innerHeight / -1000, 0.1, 1000);
 
         this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setClearColor(0x2f3640);
-        this.renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
 
-        this.geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-        this.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        this.materialF = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        this.geometry = new THREE.BoxGeometry(CUBE_GEOM, CUBE_GEOM, CUBE_GEOM);
+        this.material = new THREE.MeshBasicMaterial({ color: this.data.colors[4] });
+        this.materialF = new THREE.MeshBasicMaterial({ color: this.data.colors[4] });
 
+        this.container = document.getElementById('div');
+        this.container.appendChild(this.renderer.domElement);
 
-         //-----------------------------------------------------------------------------------
-
-         this.container = document.getElementById('CanvasFrame');
-
-         this.container.appendChild(this.renderer.domElement);
-         this.container.style.position = 'absolute';
-         this.container.style.left = 300 + 'px';
+        this.settings();
     }
 
-    initialization(matrix, figure, positionFigureY, positionFigureX) {
+    settings() {
+        this.camera.position.z = 3;
+        this.renderer.setClearColor(this.data.colors[5]);
+        this.renderer.setSize(window.innerHeight * this.dpr, window.innerHeight * this.dpr);
+
+        this.canvas = document.getElementsByTagName('canvas');
+        this.heightAndWidth = window.innerHeight / this.dpr + 200 + 'px';
+        this.canvas[0].style.height = this.heightAndWidth
+        this.canvas[0].style.width = this.heightAndWidth
+    }
+
+    initialization(matrix, figure, positionFigureY, positionFigureX, color) {
         window.addEventListener('resize', function () {
             this.onResize();
         }.bind(this))
 
         this.scene.remove.apply(this.scene, this.scene.children);
-        for (let i = 0; i < 20; i++) {
-            for (let j = 0; j < 10; j++) {
+        
+        for (let i = 0; i < ROW; i++) {
+            for (let j = 0; j < COL; j++) {
                 if (matrix[i][j]) {
-                    this.cubeF = new THREE.Mesh(this.geometry,this.materialF);
-    
-                    this.cubeF.position.x = j/10 * 1; 
-                    this.cubeF.position.y = -(i/10 * 1); 
+                    this.cubeF = new THREE.Mesh(this.geometry, this.materialF);
+
+                    this.cubeF.position.x = j * CUBE_GEOM - CUBE_POS;
+                    this.cubeF.position.y = -(i * CUBE_GEOM - CUBE_POS);
 
                     this.scene.add(this.cubeF);
                 }
@@ -71,30 +73,34 @@ export class AnimationControllerTetris {
             for (let col = 0; col < figure.matrix[row].length; col++) {
                 if (figure.matrix[row][col]) {
                     this.cube = new THREE.Mesh(this.geometry, this.material);
-                    this.cube.material.color.set( figure.color );
+
+                    this.cube.material.color.set(`${color}`);
+
                     if (positionFigureY + row < 0) {
                         break;
                     }
-                    this.cube.position.x = (positionFigureX + col)/10 * 1; 
-                    this.cube.position.y = -((positionFigureY + row)/10 * 1); 
+                    this.cube.position.x = (positionFigureX + col) * CUBE_GEOM - CUBE_POS;
+                    this.cube.position.y = -((positionFigureY + row) * CUBE_GEOM - CUBE_POS);
                     this.scene.add(this.cube);
                 }
             }
         }
 
         this.renderer.render(this.scene, this.camera);
-
     }
 
-    remove(){
+    remove() {
         this.scene.remove.apply(this.scene, this.scene.children);
         this.renderer.render(this.scene, this.camera);
     }
 
-    onResize(){
-        //let height = window.innerHeight;
-        let width = window.innerWidth;
-        this.renderer.setSize(width/2, width/2);
+    onResize() {
+        this.renderer.setSize(window.innerWidth * this.dpr, window.innerWidth * this.dpr);
+
+        this.heightAndWidth = window.innerHeight / this.dpr + 200 + 'px';
+        this.canvas[0].style.width = this.heightAndWidth
+        this.canvas[0].style.height = this.heightAndWidth
+
         this.renderer.render(this.scene, this.camera);
     }
 
