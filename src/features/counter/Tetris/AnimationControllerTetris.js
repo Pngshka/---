@@ -2,9 +2,9 @@ import * as THREE from 'three'
 import { COL, ROW, CUBE_GEOM, CUBE_POS } from '../gameConstants.js'
 
 export class AnimationControllerTetris {
-    cubeB;
     cubeF;
     cube;
+    cubeB;
     renderer;
     camera;
     container;
@@ -31,6 +31,7 @@ export class AnimationControllerTetris {
         this.geometry = new THREE.BoxGeometry(CUBE_GEOM, CUBE_GEOM, CUBE_GEOM);
         this.material = new THREE.MeshBasicMaterial({ color: this.data.colors[4] });
         this.materialF = new THREE.MeshBasicMaterial({ color: this.data.colors[4] });
+        this.materialB = new THREE.MeshBasicMaterial({ color: this.data.colors[4] });
 
         this.container = document.getElementById('div');
         this.container.appendChild(this.renderer.domElement);
@@ -79,12 +80,22 @@ export class AnimationControllerTetris {
                     if (positionFigureY + row < 0) {
                         break;
                     }
+
+                    
+                    this.geometryB = new THREE.BoxGeometry(0.45, 2, 0.1);
+                    this.cubeB = new THREE.Mesh(this.geometryB, this.materialB);
+                    this.cubeB.material.color.set(`${this.data.colors[6]}`);
+                    this.cubeB.position.z = -2;
+                    this.scene.add(this.cubeB);
+
+
                     this.cube.position.x = (positionFigureX + col) * CUBE_GEOM - CUBE_POS;
                     this.cube.position.y = -((positionFigureY + row) * CUBE_GEOM - CUBE_POS);
                     this.scene.add(this.cube);
                 }
             }
         }
+        
 
         this.renderer.render(this.scene, this.camera);
     }
