@@ -24,4 +24,5 @@ export default class Utilities{
     getClassByMap(map, name) {
         return map[name];
     }
+    
 }

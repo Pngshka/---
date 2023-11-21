@@ -4,7 +4,8 @@ import I from './I.js'
 import T from './T.js'
 import cube from './cube.js'
 import Z from './Z.js'
-import { COL, ROW } from '../gameConstants.js'
+import { COL, ROW, FIGURE_TYPE } from '../gameConstants.js'
+import {AbstractFactory} from "./AbstractFactory.js"
 
 
 export default class GameControllerTetris {
@@ -12,6 +13,7 @@ export default class GameControllerTetris {
     utilities;
 
     figure;
+    figures = [];
     matrix;
 
     fps;
@@ -40,6 +42,8 @@ export default class GameControllerTetris {
         this.fpsInterval = 1000 / 5;
         this.then = Date.now();
         this.startTime = this.then;
+
+        this.factory = new AbstractFactory().initialization(FIGURE_TYPE);
 
         this.getNextFigure();
         this.mainLoop();
@@ -144,7 +148,9 @@ export default class GameControllerTetris {
         const axis = [T, I, cube, Z][randValue];
         this.colorNow = `${this.data.colors[randValue]}`;
 
-        this.figure = new axis();
+        this.figure = this.factory.construct(axis);
+        this.figures.push(this.figure);
+
         this.figure.positionX = 4;
         this.figure.positionY = 0;
 
@@ -155,6 +161,9 @@ export default class GameControllerTetris {
                 }
             }
         }
+
+        this.factory.deconstruct(this.figures);
+        this.figures.splice(0, this.figures.length);
     }
 
     drawFigure() {
@@ -186,6 +195,9 @@ export default class GameControllerTetris {
         console.log('GameOver')
         this.animationControllerTetris.remove()
         this.matrix = Array(ROW).fill().map(() => Array(COL).fill(0));
+
+        this.factory.deconstruct(this.figures);
+        this.figures.splice(0, this.figures.length);
     }
 
     chekingRotate(matrix, figure, matrixFigure){

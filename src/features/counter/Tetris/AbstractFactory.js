@@ -1,16 +1,18 @@
+import {CubeFactory} from './CubeFactory'
+import {FigureFactory} from './FigureFactory'
+import { CUBE_TYPE, FIGURE_TYPE } from '../gameConstants'
+
 export class AbstractFactory {
-    figures = [];
+
     constructor(){}
 
-    get Figure(){
-        if (this.figures.length === 0){
-            return figure;
-        } else {
-            return this.figures.pop();
-        }
-    }
+    initialization(type){
+        if (type === CUBE_TYPE)
+            return new CubeFactory();
+        if (type === FIGURE_TYPE)
+            return new FigureFactory();
 
-    set Figure(figures){
-        this.figures.push(...figures);
+        throw new Error(`Undeclaried class: "${type}"!`);
+        
     }
 }

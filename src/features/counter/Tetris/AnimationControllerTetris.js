@@ -1,6 +1,7 @@
 import * as THREE from 'three'
-import { COL, ROW, CUBE_GEOM, CUBE_POS, CAMERA, BG_X, BG_Y, BG_Z, CAMERA_POS_Z, CUBE_BG_Z, CUBE_BG_X } from '../gameConstants.js'
-import {Factory} from './Factory.js'
+import { COL, ROW, CUBE_GEOM, CUBE_POS, CAMERA, BG_X, BG_Y, BG_Z, CAMERA_POS_Z, CUBE_BG_Z, CUBE_BG_X, CUBE_TYPE } from '../gameConstants.js'
+import {AbstractFactory} from "./AbstractFactory.js"
+import {Factory} from './CubeFactory.js'
 
 export class AnimationControllerTetris {
     cubes= [];
@@ -22,9 +23,10 @@ export class AnimationControllerTetris {
     factoryF;
 
     constructor(data) {
-        this.factory = new Factory(data.colors[4]);
-        this.factoryF = new Factory(data.colors[4]);
+        this.abstractFactory = new AbstractFactory()
 
+        this.factory = this.abstractFactory.initialization(CUBE_TYPE);
+        this.factoryF = this.abstractFactory.initialization(CUBE_TYPE);
         this.onResize = this.onResize.bind(this);
         this.data = data;
         this.dpr = window.devicePixelRatio;
@@ -69,7 +71,7 @@ export class AnimationControllerTetris {
         for (let i = 0; i < ROW; i++) {
             for (let j = 0; j < COL; j++) {
                 if (matrix[i][j]) {
-                    const cube = this.factory.Figure;
+                    const cube = this.factory.construct();
 
                     cube.position.x = j * CUBE_GEOM - CUBE_POS;
                     cube.position.y = -(i * CUBE_GEOM - CUBE_POS);
@@ -80,7 +82,7 @@ export class AnimationControllerTetris {
             }
         }
 
-        this.factory.Figure = this.cubes;
+        this.factory.deconstruct(this.cubes);
         this.cubes.splice(0, this.cubes.length);
 
         for (let row = 0; row < figure.matrix.length; row++) {
@@ -90,7 +92,7 @@ export class AnimationControllerTetris {
                         break;
                     }
 
-                    const cube = this.factoryF.Figure;
+                    const cube = this.factoryF.construct();
                     cube.material.color.set(`${color}`);
 
                     cube.position.x = (positionFigureX + col) * CUBE_GEOM - CUBE_POS;
@@ -102,7 +104,7 @@ export class AnimationControllerTetris {
             }
         }
 
-        this.factoryF.Figure = this.cubes;
+        this.factoryF.deconstruct(this.cubes);
         this.cubes.splice(0, this.cubes.length);
         
         this.scene.add(this.cubeB);
