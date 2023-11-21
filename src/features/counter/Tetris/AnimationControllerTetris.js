@@ -19,9 +19,11 @@ export class AnimationControllerTetris {
     data;
 
     factory;
+    factoryF;
 
     constructor(data) {
         this.factory = new Factory(data.colors[4]);
+        this.factoryF = new Factory(data.colors[4]);
 
         this.onResize = this.onResize.bind(this);
         this.data = data;
@@ -51,8 +53,7 @@ export class AnimationControllerTetris {
         this.container.appendChild(this.renderer.domElement);
 
         this.renderer.setClearColor(this.data.colors[5]);
-        this.onResize()
-        //this.renderer.setSize(window.innerWidth * this.dpr, window.innerHeight * this.dpr);
+        this.onResize();
 
         this.camera.position.z = CAMERA_POS_Z;
         this.cubeB.position.z = CUBE_BG_Z;
@@ -68,7 +69,7 @@ export class AnimationControllerTetris {
         for (let i = 0; i < ROW; i++) {
             for (let j = 0; j < COL; j++) {
                 if (matrix[i][j]) {
-                    const cube = this.factory.getCube(true);
+                    const cube = this.factory.Figure;
 
                     cube.position.x = j * CUBE_GEOM - CUBE_POS;
                     cube.position.y = -(i * CUBE_GEOM - CUBE_POS);
@@ -79,7 +80,7 @@ export class AnimationControllerTetris {
             }
         }
 
-        this.factory.setCube(true, this.cubes);
+        this.factory.Figure = this.cubes;
         this.cubes.splice(0, this.cubes.length);
 
         for (let row = 0; row < figure.matrix.length; row++) {
@@ -89,19 +90,19 @@ export class AnimationControllerTetris {
                         break;
                     }
 
-                    const cube = this.factory.getCube(false);
+                    const cube = this.factoryF.Figure;
                     cube.material.color.set(`${color}`);
 
                     cube.position.x = (positionFigureX + col) * CUBE_GEOM - CUBE_POS;
                     cube.position.y = -((positionFigureY + row) * CUBE_GEOM - CUBE_POS);
 
-                    this.cubes.push(cube);
+                    this.cubesF.push(cube);
                     this.scene.add(cube);
                 }
             }
         }
 
-        this.factory.setCube(false, this.cubes);
+        this.factoryF.Figure = this.cubes;
         this.cubes.splice(0, this.cubes.length);
         
         this.scene.add(this.cubeB);

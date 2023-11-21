@@ -1,28 +1,26 @@
 import * as THREE from 'three'
-import { COL, ROW, CUBE_GEOM, CUBE_POS, CAMERA } from '../gameConstants.js'
+import { CUBE_GEOM } from '../gameConstants.js'
+import { AbstractFactory } from './AbstractFactory.js';
 
-export class Factory {
-    //to do: абстрактная фабрика
-    cubes= [];
-    cubesF= [];
+export class Factory extends AbstractFactory{
 
     constructor(color){
+        super()
         this.geometry = new THREE.BoxGeometry(CUBE_GEOM, CUBE_GEOM, CUBE_GEOM);
         this.material = new THREE.MeshBasicMaterial({ color: color });
-        this.materialF = new THREE.MeshBasicMaterial();
     }
 
-    getCube(flag){
-        if (flag ? this.cubes.length===0 :  this.cubesF.length===0){
-            const cube = flag ? new THREE.Mesh(this.geometry, this.material) : new THREE.Mesh(this.geometry, this.materialF);
-            return cube;
+    get Figure(){
+        if (this.figures.length === 0){
+            const figure = new THREE.Mesh(this.geometry, this.material);
+            return figure;
         } else {
-            return flag ? this.cubes.pop() : this.cubesF.pop();
+            return this.figures.pop();
         }
     }
 
-    setCube(flag, cubes){
-        flag ? this.cubes.push(...cubes) : this.cubesF.push(...cubes);
+    set Figure(figures){
+        this.figures.push(...figures);
     }
 
 }
