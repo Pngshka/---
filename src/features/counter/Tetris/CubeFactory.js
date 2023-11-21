@@ -1,25 +1,20 @@
 import * as THREE from 'three'
 import { CUBE_GEOM } from '../gameConstants.js'
+import { AbstractFactory } from './AbstractFactory.js';
 
-export class CubeFactory {
-    cubes = [];
-
-    constructor() {
-        this.geometry = new THREE.BoxGeometry(CUBE_GEOM, CUBE_GEOM, CUBE_GEOM);
-        this.material = new THREE.MeshBasicMaterial();
+export class CubeFactory extends AbstractFactory {
+    getElement() {
+        const geometry = new THREE.BoxGeometry(CUBE_GEOM, CUBE_GEOM, CUBE_GEOM);
+        //const material = arguments[0];
+        const material = new THREE.MeshBasicMaterial();
+        return new THREE.Mesh(geometry, material);
     }
 
-    construct() {
-        if (!this.cubes.length) {
-            const figure = new THREE.Mesh(this.geometry, this.material);
-            return figure;
-        } else {
-            return this.cubes.pop();
-        }
+    getGoodElements() {
+        const material = arguments[0];
+        console.log(material);
+        return this.pull.filter(x => x.material.color.r === material.color.r &&
+            x.material.color.g === material.color.g &&
+            x.material.color.b === material.color.b);
     }
-
-    deconstruct(cubes) {
-        this.cubes.push(...cubes);
-    }
-
 }

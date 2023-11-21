@@ -5,7 +5,8 @@ import T from './T.js'
 import cube from './cube.js'
 import Z from './Z.js'
 import { COL, ROW, FIGURE_TYPE } from '../gameConstants.js'
-import {AbstractFactory} from "./AbstractFactory.js"
+import { FigureFactory } from './FigureFactory.js'
+//import {AbstractFactory} from "./Factory.js"
 
 
 export default class GameControllerTetris {
@@ -43,7 +44,7 @@ export default class GameControllerTetris {
         this.then = Date.now();
         this.startTime = this.then;
 
-        this.factory = new AbstractFactory().initialization(FIGURE_TYPE);
+        this.factory = new FigureFactory();
 
         this.getNextFigure();
         this.mainLoop();

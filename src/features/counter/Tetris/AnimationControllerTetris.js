@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { COL, ROW, CUBE_GEOM, CUBE_POS, CAMERA, BG_X, BG_Y, BG_Z, CAMERA_POS_Z, CUBE_BG_Z, CUBE_BG_X, CUBE_TYPE } from '../gameConstants.js'
-import {AbstractFactory} from "./AbstractFactory.js"
-import {Factory} from './CubeFactory.js'
+import { CubeFactory } from './CubeFactory.js';
+//import {Factory} from './CubeFactory.js'
 
 export class AnimationControllerTetris {
     cubes= [];
@@ -23,10 +23,10 @@ export class AnimationControllerTetris {
     factoryF;
 
     constructor(data) {
-        this.abstractFactory = new AbstractFactory()
-
-        this.factory = this.abstractFactory.initialization(CUBE_TYPE);
-        this.factoryF = this.abstractFactory.initialization(CUBE_TYPE);
+        
+        // this.abstractFactory = new AbstractFactory()
+        //this.factory.construct(mat2);
+        this.factory = new CubeFactory();
         this.onResize = this.onResize.bind(this);
         this.data = data;
         this.dpr = window.devicePixelRatio;
@@ -37,10 +37,16 @@ export class AnimationControllerTetris {
         this.renderer = new THREE.WebGLRenderer();
 
         this.material = new THREE.MeshBasicMaterial({ color: this.data.colors[4] });
-        this.materialF = new THREE.MeshBasicMaterial();
+        // console.log(this.material.color.r);
+        // console.log(this.material.color);
+        this.materialF = new THREE.MeshBasicMaterial({ color: this.data.colors[4] });
         this.materialB = new THREE.MeshBasicMaterial({ color: this.data.colors[6] });
 
         this.geometry = new THREE.BoxGeometry(CUBE_GEOM, CUBE_GEOM, CUBE_GEOM);
+
+        const figure = new THREE.Mesh(this.geometry, this.material);
+        console.log(121112312321);
+        console.log(figure.constructor.name);
 
         this.geometryB = new THREE.BoxGeometry(BG_X, BG_Y, BG_Z);
         this.cubeB = new THREE.Mesh(this.geometryB, this.materialB);
@@ -71,7 +77,7 @@ export class AnimationControllerTetris {
         for (let i = 0; i < ROW; i++) {
             for (let j = 0; j < COL; j++) {
                 if (matrix[i][j]) {
-                    const cube = this.factory.construct();
+                    const cube = this.factory.construct( this.material);
 
                     cube.position.x = j * CUBE_GEOM - CUBE_POS;
                     cube.position.y = -(i * CUBE_GEOM - CUBE_POS);
@@ -92,7 +98,7 @@ export class AnimationControllerTetris {
                         break;
                     }
 
-                    const cube = this.factoryF.construct();
+                    const cube = this.factory.construct(this.materialF);
                     cube.material.color.set(`${color}`);
 
                     cube.position.x = (positionFigureX + col) * CUBE_GEOM - CUBE_POS;
@@ -104,7 +110,7 @@ export class AnimationControllerTetris {
             }
         }
 
-        this.factoryF.deconstruct(this.cubes);
+        this.factory.deconstruct(this.cubes);
         this.cubes.splice(0, this.cubes.length);
         
         this.scene.add(this.cubeB);
