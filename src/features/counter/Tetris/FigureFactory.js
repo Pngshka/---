@@ -3,13 +3,13 @@ import Utilities from './Utilities.js'
 
 export class FigureFactory extends AbstractFactory {
     getElement() {
-        const clazz = arguments[0];
-        console.log(clazz);
+        const clazz = this.args[0];
+        // console.log(clazz);
         return new clazz();
     }
 
     getGoodElements() {
-        const clazz = arguments[0];
+        const clazz = this.args[0];
         return this.pull.filter(x => x.constructor.name === clazz.name);
     }
 }
